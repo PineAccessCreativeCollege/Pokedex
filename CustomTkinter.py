@@ -26,12 +26,14 @@ def main():
         new_y = root.winfo_y() + delta_y
         root.geometry(f'+{new_x}+{new_y}')
 
-        
-    root.geometry("400x700")
+    
+    root.geometry("500x800")
     root.overrideredirect(True)  # Remove title bar and "X" button
 
-    top_bar = ctk.CTkFrame(root, height=70, bg_color="transparent")#fg_color="transparent"
-    top_bar.pack(fill=ctk.X, side=ctk.TOP)
+    root.grid_columnconfigure(0, weight=1)
+
+    top_bar = ctk.CTkFrame(root, height=90, bg_color="transparent")#fg_color="transparent"
+    top_bar.grid(row=0, sticky="ew")
     
     ##Define Custom X button
     XImage_path = "Red_X.png"
@@ -42,15 +44,16 @@ def main():
     
     close_button = ctk.CTkButton(top_bar, text=None, width=70,image=XImage, bg_color="transparent",fg_color="transparent",
                                  text_color="red", hover=None, command=on_close)
-    close_button.pack(side=ctk.LEFT, pady=10)
+    close_button.grid()
+    
+    profile_button = ctk.CTkButton(top_bar)
+    profile_button.grid(column=8, row=0, sticky="e")
 
     top_bar.bind("<ButtonPress-1>", start_drag)  # When mouse button is pressed
     top_bar.bind("<B1-Motion>", do_drag)  # When mouse is moved with button pressed
 
-
-
-    w = ctk.CTkLabel(root, text='Pokedex')
-    w.pack()
+    w = ctk.CTkEntry(root, width=400, height=50)
+    w.grid(row=10, pady=20)
 
     root.mainloop()
     
