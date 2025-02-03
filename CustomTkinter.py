@@ -2,14 +2,16 @@ import customtkinter as ctk
 from tkinter import PhotoImage
 from PIL import Image, ImageTk
 import Profile
+from Profile import window_open
+from Profile import open_profile
 
-def main():
-      
+def main():    
     ######
     #Root Window
     ######
        
     root = ctk.CTk(screenName=None, baseName=None, useTk=1)
+    window_open=False
     
     def on_close():
         print("Killing Window")
@@ -34,6 +36,15 @@ def main():
 
     root.grid_columnconfigure(0, weight=1)
     root.grid_columnconfigure(1, weight=0)
+    
+    def open_profile_root():
+        window_open=False
+        if window_open == False:
+            print("Window Open")
+            Profile.open_profile(root)
+        else:
+            print("Window not")
+            
 
     ##FRAMES
 
@@ -47,17 +58,15 @@ def main():
     pill_image = Image.open(ximagemage_path).resize((25,25))
     XImage = ImageTk.PhotoImage(pill_image)
     
-    label = ctk.CTkLabel(root, image=XImage)
-    label.image = XImage #Prevents garbage collection 
-    label.grid(column=0, row=10)
-    
     ##BUTTONS
     close_button = ctk.CTkButton(top_bar, text=None, width=70, image=XImage, bg_color="transparent",
                                  fg_color="transparent", text_color="red", hover=None, command=on_close)
     
     profile_button = ctk.CTkButton(top_bar, width=50, height=50, text=None, 
                                    fg_color="grey", hover=None, corner_radius=25, 
-                                   border_width=0, command=Profile.open_profile)
+                                   border_width=0, command=open_profile_root)
+    
+    
     top_bar.bind("<ButtonPress-1>", start_drag)  # When mouse button is pressed
     top_bar.bind("<B1-Motion>", do_drag)  # When mouse is moved with button pressed
      
@@ -91,13 +100,14 @@ def main():
         
         
     ##An simpler algorithm for filling the search results frame with buttons
-    for i in range(100):
+    for i in range(10):
         i_search_slot = 'search_result_' + str(i)
         i_search_slot = ctk.CTkButton(search_results_f, text=None)
         
         i_search_slot.grid(row=i, column=0, padx=10, pady=10)    
     
     ##Runs the Main Window
+        
     root.mainloop()
     
 if __name__ == "__main__":

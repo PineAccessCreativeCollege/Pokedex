@@ -2,12 +2,19 @@ import customtkinter as ctk
 from tkinter import PhotoImage
 from PIL import Image, ImageTk
 
-def open_profile():
+
+window_open=False
+def open_profile(root):
     
-    print("Opens Profile")
+    ######
+    #Profile Window
+    ######
+    
+    print("HEy")
+    profile = ctk.CTkToplevel( root )
+    profile.transient( root ) 
     
     ##SETUP WINDOW
-    profile = ctk.CTk(screenName=None, baseName=None, useTk=1)
     profile.geometry("500x800")
     profile.overrideredirect(True)  # Remove title bar and "X" button
 
@@ -17,6 +24,7 @@ def open_profile():
     ##FUNCTIONS
     def on_close():
         print("Killing Window")
+        window_open=False
         profile.destroy()
         
     def start_drag(event):
@@ -34,10 +42,15 @@ def open_profile():
 
     
     ##FRAMES
-    top_bar = ctk.CTkFrame(profile, height=90, bg_color="transparent")#fg_color="transparent"
+    top_bar = ctk.CTkFrame(profile, height=120, bg_color="transparent")#fg_color="transparent"
 
+    ##IMAGES
+    ximagemage_path = "Red_X.png"
+    pill_image = Image.open(ximagemage_path).resize((25,25))
+    XImage = ImageTk.PhotoImage(pill_image)
+    
     ##BUTTONS
-    close_button = ctk.CTkButton(top_bar, text=None, width=70, bg_color="transparent",
+    close_button = ctk.CTkButton(top_bar, text=None, width=70, bg_color="transparent", image=XImage,
                                  fg_color="transparent", text_color="red", hover=None, command=on_close)
     
     top_bar.bind("<ButtonPress-1>", start_drag)  # When mouse button is pressed
@@ -45,7 +58,7 @@ def open_profile():
     
     ##LAYOUT
     top_bar.grid(row=0, column=0, sticky="ew")
-    close_button.grid(row=0, column=0, sticky="w")
+    close_button.grid(row=0, column=0, sticky="e")
     
     profile.mainloop()
     
