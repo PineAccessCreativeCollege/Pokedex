@@ -96,7 +96,7 @@ class Main(ctk.CTkFrame):
         print("Profile window closed")
         self.profile_window.destroy()
         self.profile_window = None
-        
+
 class ProfileWindow(ctk.CTkToplevel):
     def __init__(self, main_instance, *args, fg_color = None, **kwargs):
         super().__init__(*args, fg_color=fg_color, **kwargs)
@@ -153,7 +153,6 @@ class ProfileWindow(ctk.CTkToplevel):
         ##LAYOUT
         top_bar.grid(row=0, column=0, sticky="ew")
         close_button.grid(row=0, column=0, sticky="e", padx=(335,0), pady=10)
-        
 
 class DraggableWindow():
     def __init__(self, window):
