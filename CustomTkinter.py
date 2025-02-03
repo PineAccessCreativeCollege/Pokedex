@@ -2,8 +2,7 @@ import customtkinter as ctk
 from tkinter import PhotoImage
 from PIL import Image, ImageTk
 import Profile
-from Profile import window_open
-from Profile import open_profile
+from Profile import open_profile, window_open
 
 def main():    
     ######
@@ -42,6 +41,7 @@ def main():
         if window_open == False:
             print("Window Open")
             Profile.open_profile(root)
+            window_open=True
         else:
             print("Window not")
             

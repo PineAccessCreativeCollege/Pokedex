@@ -5,14 +5,16 @@ from PIL import Image, ImageTk
 
 window_open=False
 def open_profile(root):
-    
+    global window_open
+    print(window_open)
     ######
     #Profile Window
     ######
     
     print("HEy")
     profile = ctk.CTkToplevel( root )
-    profile.transient( root ) 
+    profile.transient( root )
+    
     
     ##SETUP WINDOW
     profile.geometry("500x800")
@@ -23,8 +25,9 @@ def open_profile(root):
     
     ##FUNCTIONS
     def on_close():
-        print("Killing Window")
+        global window_open
         window_open=False
+        print(window_open)
         profile.destroy()
         
     def start_drag(event):
