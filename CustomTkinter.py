@@ -10,13 +10,20 @@ class Main(ctk.CTkFrame):
         #Root Window Settings
         ######
         
+        self.profile_window = None
+        
         def on_close():
             print("Killing Window")
             self.master.destroy()
             
         def open_profile_window():
             print("Opening Profile Window")
-            profile_window = ProfileWindow(self)      
+            if self.profile_window is None or not self.profile_window.winfo_exists():
+                self.profile_window = ProfileWindow(self)
+                self.profile_window.protocol("WM_DELETE_WINDOW", self.on_profile_close)
+            else:
+                print("Profile window already open")
+                self.profile_window.focus()
             
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=0)
@@ -85,10 +92,16 @@ class Main(ctk.CTkFrame):
             
             i_search_slot.grid(row=i, column=0, padx=10, pady=10)
 
+    def on_profile_close(self):
+        print("Profile window closed")
+        self.profile_window.destroy()
+        self.profile_window = None
+        
 class ProfileWindow(ctk.CTkToplevel):
-    def __init__(self, *args, fg_color = None, **kwargs):
+    def __init__(self, main_instance, *args, fg_color = None, **kwargs):
         super().__init__(*args, fg_color=fg_color, **kwargs)
-    
+        self.main_instance = main_instance
+        
         ######
         #Profile Window
         ######
@@ -106,10 +119,7 @@ class ProfileWindow(ctk.CTkToplevel):
         
         ##FUNCTIONS
         def on_close():
-            global window_open
-            window_open=False
-            print(window_open)
-            self.destroy()
+            self.main_instance.on_profile_close()
             
         def start_drag(event):
             # Record the initial position when the mouse is pressed
@@ -144,7 +154,6 @@ class ProfileWindow(ctk.CTkToplevel):
         top_bar.grid(row=0, column=0, sticky="ew")
         close_button.grid(row=0, column=0, sticky="e", padx=(335,0), pady=10)
         
-        self.mainloop()
 
 class DraggableWindow():
     def __init__(self, window):
