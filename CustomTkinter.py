@@ -17,8 +17,8 @@ class Main(ctk.CTkFrame):
             self.master.destroy()
             
         def open_profile_window():
-            print("Opening Profile Window")
             if self.profile_window is None or not self.profile_window.winfo_exists():
+                print("Opening Profile Window")
                 self.profile_window = ProfileWindow(self)
                 self.profile_window.protocol("WM_DELETE_WINDOW", self.on_profile_close)
             else:
@@ -55,19 +55,16 @@ class Main(ctk.CTkFrame):
         top_bar.bind("<B1-Motion>", self.draggable.do_drag)  # When mouse is moved with button pressed
         
         ##ENTRYS
-        search_box = ctk.CTkEntry(self, width=400, height=50, placeholder_text="Enter a Pokemon name or ID")
+        self.search_box = ctk.CTkEntry(self, width=400, height=50, placeholder_text="Enter a Pokemon name or ID")
         
         ##LAYOUT
         top_bar.grid(row=0, column=0, sticky="ew")
         close_button.grid(row=0, column=0, sticky="w", padx=(0,370))
         profile_button.grid(row=0, column=1, sticky="e", pady=10, padx=0)
-        search_box.grid(row=1, column=0, pady=20)
+        self.search_box.grid(row=1, column=0, pady=20)
         pokemon_profile.grid(row=2, column=0, sticky="w", padx=10)
         search_results_f.grid(row=2, column=0, sticky="e", padx=10)
         current_party.grid(row=3, column=0, sticky="ew", padx=10, pady=20)    
-        
-        
-        
         
         ##A simple algorithm for filling the buttons up inside the users party/ should
         #make it easier to shift to a class based system for the buttons which should
@@ -91,11 +88,14 @@ class Main(ctk.CTkFrame):
             i_search_slot = ctk.CTkButton(search_results_f, text=None)
             
             i_search_slot.grid(row=i, column=0, padx=10, pady=10)
-
+        
     def on_profile_close(self):
         print("Profile window closed")
         self.profile_window.destroy()
         self.profile_window = None
+        
+    def get_username(self):
+        return self.search_box.get()
 
 class ProfileWindow(ctk.CTkToplevel):
     def __init__(self, main_instance, *args, fg_color = None, **kwargs):
@@ -121,20 +121,6 @@ class ProfileWindow(ctk.CTkToplevel):
         def on_close():
             self.main_instance.on_profile_close()
             
-        def start_drag(event):
-            # Record the initial position when the mouse is pressed
-            global drag_data
-            drag_data = {'x': event.x, 'y': event.y}
-
-        def do_drag(event):
-            # Calculate the movement and move the window
-            delta_x = event.x - drag_data['x']
-            delta_y = event.y - drag_data['y']
-            new_x = self.winfo_x() + delta_x
-            new_y = self.winfo_y() + delta_y
-            self.geometry(f'+{new_x}+{new_y}')
-
-        
         ##FRAMES
         top_bar = ctk.CTkFrame(self, height=120, bg_color="transparent")#fg_color="transparent"
 
@@ -167,12 +153,19 @@ class DraggableWindow():
         new_x = self.window.winfo_x() + delta_x
         new_y = self.window.winfo_y() + delta_y
         self.window.geometry(f'+{new_x}+{new_y}')
-    
 def main():
     root=ctk.CTk()
-    root.overrideredirect(True)  # Remove title bar and "X" button
+    root.overrideredirect(True)
     window = Main(root)
     window.grid(row=0, column=0)
+    
+    def get_pokemon_input(event):
+        print("Getting pokemon input")
+        pokemon = window.get_username()
+        print(f"Username: {pokemon}")
+    
+    window.master.bind('<Return>', get_pokemon_input)
+    
     root.mainloop()
     
 if __name__ == "__main__":
