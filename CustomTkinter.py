@@ -1,6 +1,8 @@
 import customtkinter as ctk
-from tkinter import PhotoImage
+from tkinter import PhotoImage, simpledialog, messagebox
 from PIL import Image, ImageTk
+import Login
+import pandas as pd
 
 class Main(ctk.CTkFrame):
     def __init__(self, master, width = 500, height = 800, corner_radius = None, border_width = None, bg_color = "transparent", fg_color = None, border_color = None, background_corner_colors = None, overwrite_preferred_drawing_method = None, **kwargs):
@@ -97,9 +99,15 @@ class Main(ctk.CTkFrame):
     def get_username(self):
         return self.search_box.get()
     
-    def login(self):
-        print("Logged in")
-    
+    def send_login_register_commands(self, username, password, type):
+        if type == "login":
+            Login.Login(username, password)
+        elif type == "register":
+            Login.Register(username, password)
+        else:
+            print("Invalid login/register type")
+        
+        
 class ProfileWindow(ctk.CTkToplevel):
     def __init__(self, main_instance, *args, fg_color = None, **kwargs):
         super().__init__(*args, fg_color=fg_color, **kwargs)
@@ -118,12 +126,22 @@ class ProfileWindow(ctk.CTkToplevel):
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=0)
         
+        self.login_window = None
         self.draggable = DraggableWindow(self)
         
         ##FUNCTIONS
         def on_close():
             self.main_instance.on_profile_close()
-            
+        
+        def open_login_window():
+            if self.login_window is None or not self.login_window.winfo_exists():
+                print("Opening Login Window")
+                self.login_window = LoginWindow(self)
+                self.login_window.protocol("WM_DELETE_WINDOW", self.on_login_close)
+            else:
+                print("Login window already open")
+                self.login_window.focus()
+                   
         ##FRAMES
         top_bar = ctk.CTkFrame(self, height=120, bg_color="transparent")#fg_color="transparent"
 
@@ -136,7 +154,7 @@ class ProfileWindow(ctk.CTkToplevel):
         close_button = ctk.CTkButton(top_bar, text=None, width=70, bg_color="transparent", image=XImage,
                                     fg_color="transparent", text_color="red", hover=None, command=on_close)
         
-        login_button = ctk.CTkButton(top_bar, text="Login", width=100, height=50, bg_color="grey", fg_color="red")
+        login_button = ctk.CTkButton(top_bar, text="Login", width=100, height=50, bg_color="grey", fg_color="red", command=open_login_window)
         
         top_bar.bind("<ButtonPress-1>", self.draggable.start_drag)  # When mouse button is pressed
         top_bar.bind("<B1-Motion>", self.draggable.do_drag)  # When mouse is moved with button pressed
@@ -148,7 +166,114 @@ class ProfileWindow(ctk.CTkToplevel):
         close_button.grid(row=0, column=1, sticky="e", padx=(220,0), pady=10)
         login_button.grid(row=0, column=0, sticky="w", padx=10, pady=10)
 
+    def on_login_close(self):
+        print("Login window closed")
+        self.login_window.destroy()
+        self.login_window = None
+    
+class LoginWindow(ctk.CTkToplevel):
+    def __init__(self, profile_instance, *args, fg_color = None, **kwargs):
+        super().__init__(*args, fg_color=fg_color, **kwargs)
+        self.profile_instance = profile_instance
+        
+        ######
+        #Login Window
+        ######
+                
+        ##SETUP WINDOW
+        self.geometry("400x300")
+        self.overrideredirect(True)  # Remove title bar and "X" button
+
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=0)
+        
+        self.draggable = DraggableWindow(self)
+        
+        ##FUNCTIONS
+        def on_close():
+            self.profile_instance.on_login_close()
+        
+        def login_data_sender():
+            username = username_entry.get()
+            password = password_entry.get()
+            
+            user_data = pd.read_csv('user_data.csv')
+            user_pass = str(password)
+    
+            if (not user_pass.isspace() or not len(user_pass) < 8 or not len(user_pass) > 20 or not any(char.isupper() for char in user_pass)):
+                #Edit info prompts
+                pass
+            else:
+                print("Invalid Password!!")
+                #Edit info prompts
+                return
+        
+            self.profile_instance.main_instance.send_login_register_commands(username, password, type = "login")
+        
+        def register_account():
+            username = username_entry.get()
+            password = password_entry.get()
+            
+            user_data = pd.read_csv('user_data.csv')
+    
+            user_name = str(username)
+            
+            if user_name in user_data['Username'].values:
+                print("Username already exists!")
+                #Edit info prompts
+                return
+            user_pass = str(password)
+            
+            
+            if not user_pass or user_pass.isspace() or len(user_pass) < 8 or len(user_pass) > 20 or not any(char.isupper() for char in user_pass):
+                print("Invalid Password!!")
+                #Edit info prompts
+                return
+            else:
+                #Edit info prompts
+                pass
+            
+            self.profile_instance.main_instance.send_login_register_commands(username, password, type = "register")
+              
+        ##FRAMES
+        top_bar = ctk.CTkFrame(self, height=120, bg_color="transparent")#fg_color="transparent"
+
+        ##IMAGES
+        ximagemage_path = "Red_X.png"
+        pill_image = Image.open(ximagemage_path).resize((25,25))
+        XImage = ImageTk.PhotoImage(pill_image)
+        
+        ##BUTTONS
+        close_button = ctk.CTkButton(top_bar, text=None, width=70, bg_color="transparent", image=XImage,
+                                    fg_color="transparent", text_color="red", hover=None, command=on_close)
+        submit_button = ctk.CTkButton(self, text="Submit", width=100, height=50, bg_color="grey", 
+                                      fg_color="red", command=login_data_sender)
+        register_button = ctk.CTkButton(self, text="Click to Register with these details", width=100,
+                                        hover_color=None, fg_color="transparent", hover=None, 
+                                        command=register_account, text_color="red")
+        
+        ##ENTRYS
+        username_entry = ctk.CTkEntry(self, placeholder_text="Enter your username")
+        password_entry = ctk.CTkEntry(self, show="*", placeholder_text="Enter your password")
+        
+        top_bar.bind("<ButtonPress-1>", self.draggable.start_drag)  # When mouse button is pressed
+        top_bar.bind("<B1-Motion>", self.draggable.do_drag)  # When mouse is moved with button pressed
+        
+        ##LABELS
+        
+        user_hint = ctk.CTkLabel(self, text="Hey you")
+        
+        ##LAYOUT
+        top_bar.grid(row=0, column=0, sticky="ew")
+        close_button.grid(row=0, column=1, sticky="e", padx=(340,0), pady=10)
+        username_entry.grid(row=1, column=0, sticky="ew", pady=(30,10), padx=20)
+        password_entry.grid(row=2, column=0, sticky="ew", pady=10, padx=20)
+        submit_button.grid(row=4, column=0, sticky="ew", pady=10, padx=40)
+        user_hint.grid(row=3, column=0, sticky="ew", padx=20)
+        register_button.grid(row=5, column=0, sticky="ew")
+        
 class DraggableWindow():
+
     def __init__(self, window):
         self.window = window
         self.drag_data = {'x': 0, 'y': 0}

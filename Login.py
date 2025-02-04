@@ -1,59 +1,12 @@
 import bcrypt
 import pandas as pd
 import uuid
-
-#def password_check(passwd):
-     
-    #SpecialSym =['$', '@', '#', '%']
-    #val = True
-     
-    #if len(passwd) < 6:
-        #pass_eror='length should be at least 6'
-        #val = False, pass_eror
-         
-    #if len(passwd) > 20:
-        #pass_eror='length should be not be greater than 8'
-        #val = False, pass_eror
-         
-    #if not any(char.isdigit() for char in passwd):
-        #pass_eror='Password should have at least one numeral'
-        #val = False, pass_eror
-         
-    #if not any(char.isupper() for char in passwd):
-        #pass_eror='Password should have at least one uppercase letter'
-        #val = False, pass_eror
-         
-    #if not any(char.islower() for char in passwd):
-        #pass_eror='Password should have at least one lowercase letter'
-        #val = False, pass_eror
-         
-    #if not any(char in SpecialSym for char in passwd):
-        #pass_eror='Password should have at least one of the symbols $@#'
-        #val = False, pass_eror
-    #if val:
-        #return val, None
     
-    
-def Register():
+def Register(username, password):
     user_data = pd.read_csv('user_data.csv')
     
-    
-    try:
-        user_name = input("Enter a username: ")
-        if user_name in user_data['Username'].values:
-            print("Username already exists!") 
-        user_pass = input("Enter a password: ")
-        
-        
-        if (not user_pass.isspace() or not len(user_pass) < 8 or not len(user_pass) > 20):
-            print("Password is valid")
-        else:
-            print("Invalid Password!!")
-            return
-            
-    except Exception as e:
-        print("An error occurred:", e)
-    
+    user_name = str(username)
+    user_pass = password
     bytes = user_pass.encode('utf-8') 
      
     salt = bcrypt.gensalt() 
@@ -89,9 +42,10 @@ def Register():
     
 def Login(username, password):
     
+    error=""
     user_data = pd.read_csv('user_data.csv')
     
-    uname = username
+    uname = str(username)
     if uname in user_data['Username'].values:
         pwrd=password
         #Locate correct password from user data based on username
@@ -103,10 +57,14 @@ def Login(username, password):
         
         if bcrypt.checkpw(pwrd.encode('utf-8'), correct_pass.encode('utf-8')):
             print("Login Successful!")
+            user_uuid = user_data.loc[user_data['Username'] == uname, 'UUID'].values
+            return True, user_uuid 
         else:
             print("Incorrect password!")
     else:
-        print("Username not found, you can register?")
+        error="Username not found, you can register?"
+        return error
         
         
-Register()
+if __name__ == "__main__":  
+    Register()
