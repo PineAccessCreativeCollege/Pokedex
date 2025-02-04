@@ -1,2 +1,7 @@
-Username,Password, UUID, Poke1, Poke2, Poke3, Poke4, Poke5, Poke6
-Syd,$2b$12$sMk6lC6/g0cHlv4.jwh2JOOrz.9vOfivHnnHirNRpj53gHbfu9FA2,120512,61,14,85,25,63,86
+Username,Password,UUID,Poke1,Poke2,Poke3,Poke4,Poke5,Poke6
+Syd,$2b$12$sMk6lC6/g0cHlv4.jwh2JOOrz.9vOfivHnnHirNRpj53gHbfu9FA2,fda5cb62-5976-4495-8367-c908c366c7eb,61.0,14.0,85.0,25.0,63.0,86.0
+Alex,$2b$12$b.qMk5w3EssFXYCBrrODkuBuVHAj3z/n5bqGU9tt0g.JnR5Pd2sji,cb7b5bce-79e8-4acc-83ea-706ee0e9f9a5,1.0,4.0,7.0,10.0,13.0,16.0
+Willow,$2b$12$HBHcvWN.0GVOQooK2KN8cecwInj2atqKyZZq/MMnE3O7Pgc21S7zu,565c0044-56a9-4fdb-822a-238e5df50df1,1.0,4.0,7.0,10.0,13.0,16.0
+Mario,$2b$12$6IPPRy98u4gTd89dEMDjEelBFHMyoWaDSW/rPrgNn1FV2KPKubRxu,b03c5a9f-3335-4ea7-83fa-695f4f3f43ea,1.0,4.0,7.0,10.0,13.0,16.0
+freddie,$2b$12$AUv8uh07T3xUOAl8WV2dA.Qo0ptTpIxSGlGK5KhuUQXfX3ST7rque,bac61ad7-4b86-4fe9-90c2-e959c944b147,1.0,4.0,7.0,10.0,13.0,16.0
+Joe,$2b$12$lWpEoJsjhgj.Ox7IK34NguPHf.4DcE2lPHvbtyGODixhF.av1KSKW,1d63946d-e79f-442d-9648-692c43e4b585,1.0,4.0,7.0,10.0,13.0,16.0

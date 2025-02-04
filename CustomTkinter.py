@@ -96,7 +96,10 @@ class Main(ctk.CTkFrame):
         
     def get_username(self):
         return self.search_box.get()
-
+    
+    def login(self):
+        print("Logged in")
+    
 class ProfileWindow(ctk.CTkToplevel):
     def __init__(self, main_instance, *args, fg_color = None, **kwargs):
         super().__init__(*args, fg_color=fg_color, **kwargs)
@@ -133,12 +136,17 @@ class ProfileWindow(ctk.CTkToplevel):
         close_button = ctk.CTkButton(top_bar, text=None, width=70, bg_color="transparent", image=XImage,
                                     fg_color="transparent", text_color="red", hover=None, command=on_close)
         
+        login_button = ctk.CTkButton(top_bar, text="Login", width=100, height=50, bg_color="grey", fg_color="red")
+        
         top_bar.bind("<ButtonPress-1>", self.draggable.start_drag)  # When mouse button is pressed
         top_bar.bind("<B1-Motion>", self.draggable.do_drag)  # When mouse is moved with button pressed
         
+        
+        
         ##LAYOUT
         top_bar.grid(row=0, column=0, sticky="ew")
-        close_button.grid(row=0, column=0, sticky="e", padx=(335,0), pady=10)
+        close_button.grid(row=0, column=1, sticky="e", padx=(220,0), pady=10)
+        login_button.grid(row=0, column=0, sticky="w", padx=10, pady=10)
 
 class DraggableWindow():
     def __init__(self, window):
