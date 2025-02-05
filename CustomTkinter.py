@@ -12,6 +12,9 @@ class Main(ctk.CTkFrame):
         #Root Window Settings
         ######
         
+        self.logged_in = False
+        self.user_UUID = "None"
+        
         self.profile_window = None
         
         def on_close():
@@ -100,12 +103,27 @@ class Main(ctk.CTkFrame):
         return self.search_box.get()
     
     def send_login_register_commands(self, username, password, type):
+        print(self.logged_in, self.user_UUID)
         if type == "login":
-            Login.Login(username, password)
+            self.logged_in, self.user_UUID = Login.Login(username, password)
         elif type == "register":
             Login.Register(username, password)
+            self.logged_in, self.user_UUID = Login.Register(username, password)
         else:
             print("Invalid login/register type")
+        print(self.logged_in, self.user_UUID)
+        
+        if self.logged_in:
+            self.profile_window.login_window.destroy()
+            #Kill login window
+            #Output message box for successful login
+            #Run function for fetching user data and filling boxes
+            pass
+    
+    def load_user_data(self):
+        # Fetch user data and fill boxes
+        # Build modularly for universal use. (or not)
+        pass
         
         
 class ProfileWindow(ctk.CTkToplevel):

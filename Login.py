@@ -40,6 +40,8 @@ def Register(username, password):
     
     new_csv = user_data.to_csv('user_data.csv', index=False)
     
+    return True, user_uuid
+
 def Login(username, password):
     
     error=""
@@ -58,12 +60,12 @@ def Login(username, password):
         if bcrypt.checkpw(pwrd.encode('utf-8'), correct_pass.encode('utf-8')):
             print("Login Successful!")
             user_uuid = user_data.loc[user_data['Username'] == uname, 'UUID'].values
-            return True, user_uuid 
+            return True, user_uuid[0]
         else:
             print("Incorrect password!")
     else:
         error="Username not found, you can register?"
-        return error
+        return False, error
         
         
 if __name__ == "__main__":  
