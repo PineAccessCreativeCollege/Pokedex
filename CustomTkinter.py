@@ -107,7 +107,6 @@ class Main(ctk.CTkFrame):
         if type == "login":
             self.logged_in, self.user_UUID = Login.Login(username, password)
         elif type == "register":
-            Login.Register(username, password)
             self.logged_in, self.user_UUID = Login.Register(username, password)
         else:
             print("Invalid login/register type")
@@ -115,9 +114,11 @@ class Main(ctk.CTkFrame):
         
         if self.logged_in:
             self.profile_window.login_window.destroy()
-            #Kill login window
             #Output message box for successful login
             #Run function for fetching user data and filling boxes
+            pass
+        else:
+            self.profile_window.login_window.update_user()
             pass
     
     def load_user_data(self):
@@ -289,7 +290,10 @@ class LoginWindow(ctk.CTkToplevel):
         submit_button.grid(row=4, column=0, sticky="ew", pady=10, padx=40)
         user_hint.grid(row=3, column=0, sticky="ew", padx=20)
         register_button.grid(row=5, column=0, sticky="ew")
-        
+    
+    def update_user(hint):
+        self.user_hint.config(text=hint)
+       
 class DraggableWindow():
 
     def __init__(self, window):
