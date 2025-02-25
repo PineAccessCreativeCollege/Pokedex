@@ -62,9 +62,12 @@ def Login(username, password):
             user_uuid = user_data.loc[user_data['Username'] == uname, 'UUID'].values
             return True, user_uuid[0]
         else:
+            error="Incorrect password"
             print("Incorrect password!")
+            return False, error
     else:
         error="Username not found, you can register?"
+        print("Username not found")
         return False, error
         
         

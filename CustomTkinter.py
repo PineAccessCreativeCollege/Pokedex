@@ -118,7 +118,7 @@ class Main(ctk.CTkFrame):
             #Run function for fetching user data and filling boxes
             pass
         else:
-            self.profile_window.login_window.update_user()
+            self.profile_window.login_window.update_user(self.user_UUID)
             pass
     
     def load_user_data(self):
@@ -280,7 +280,7 @@ class LoginWindow(ctk.CTkToplevel):
         
         ##LABELS
         
-        user_hint = ctk.CTkLabel(self, text="Hey you")
+        self.user_hint = ctk.CTkLabel(self, text="Hey you")
         
         ##LAYOUT
         top_bar.grid(row=0, column=0, sticky="ew")
@@ -288,11 +288,11 @@ class LoginWindow(ctk.CTkToplevel):
         username_entry.grid(row=1, column=0, sticky="ew", pady=(30,10), padx=20)
         password_entry.grid(row=2, column=0, sticky="ew", pady=10, padx=20)
         submit_button.grid(row=4, column=0, sticky="ew", pady=10, padx=40)
-        user_hint.grid(row=3, column=0, sticky="ew", padx=20)
+        self.user_hint.grid(row=3, column=0, sticky="ew", padx=20)
         register_button.grid(row=5, column=0, sticky="ew")
     
-    def update_user(hint):
-        self.user_hint.config(text=hint)
+    def update_user(self, hint):
+        self.user_hint.configure(text=hint)
        
 class DraggableWindow():
 
