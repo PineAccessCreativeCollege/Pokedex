@@ -296,9 +296,8 @@ class LoginWindow(ctk.CTkToplevel):
         self.user_hint.grid(row=3, column=0, sticky="ew", padx=20)
         register_button.grid(row=5, column=0, sticky="ew")
     
-    def update_user(self,error):
-        self.user_hint.configure(text=error)
-        self.user_hint.configure(width="70%")
+    def update_user(hint):
+        self.user_hint.config(text=hint)
        
 class DraggableWindow():
 
