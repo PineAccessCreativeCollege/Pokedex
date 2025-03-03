@@ -5,8 +5,12 @@ import Login
 import pandas as pd
 
 class Main(ctk.CTkFrame):
-    def __init__(self, master, width = 500, height = 800, corner_radius = None, border_width = None, bg_color = "transparent", fg_color = None, border_color = None, background_corner_colors = None, overwrite_preferred_drawing_method = None, **kwargs):
-        super().__init__(master, width, height, corner_radius, border_width, bg_color, fg_color, border_color, background_corner_colors, overwrite_preferred_drawing_method, **kwargs)
+    def __init__(self, master, width = 500, height = 800, corner_radius = None, border_width = None,
+                 bg_color = "transparent", fg_color = None, border_color = None,
+                 background_corner_colors = None, overwrite_preferred_drawing_method = None, **kwargs):
+        
+        super().__init__(master, width, height, corner_radius, border_width, bg_color, fg_color,
+                         border_color, background_corner_colors, overwrite_preferred_drawing_method, **kwargs)
         
         ######
         #Root Window Settings
@@ -118,7 +122,7 @@ class Main(ctk.CTkFrame):
             #Run function for fetching user data and filling boxes
             pass
         else:
-            self.profile_window.login_window.update_user()
+            self.profile_window.login_window.update_user(self.user_UUID)
             pass
     
     def load_user_data(self):
@@ -219,7 +223,8 @@ class LoginWindow(ctk.CTkToplevel):
             user_data = pd.read_csv('user_data.csv')
             user_pass = str(password)
     
-            if (not user_pass.isspace() or not len(user_pass) < 8 or not len(user_pass) > 20 or not any(char.isupper() for char in user_pass)):
+            if (not user_pass.isspace() or not len(user_pass) < 8 or not len(user_pass) > 20 or not
+                any(char.isupper() for char in user_pass)):
                 #Edit info prompts
                 pass
             else:
@@ -280,7 +285,7 @@ class LoginWindow(ctk.CTkToplevel):
         
         ##LABELS
         
-        user_hint = ctk.CTkLabel(self, text="Hey you")
+        self.user_hint = ctk.CTkLabel(self, text="Hey you")
         
         ##LAYOUT
         top_bar.grid(row=0, column=0, sticky="ew")
@@ -288,11 +293,12 @@ class LoginWindow(ctk.CTkToplevel):
         username_entry.grid(row=1, column=0, sticky="ew", pady=(30,10), padx=20)
         password_entry.grid(row=2, column=0, sticky="ew", pady=10, padx=20)
         submit_button.grid(row=4, column=0, sticky="ew", pady=10, padx=40)
-        user_hint.grid(row=3, column=0, sticky="ew", padx=20)
+        self.user_hint.grid(row=3, column=0, sticky="ew", padx=20)
         register_button.grid(row=5, column=0, sticky="ew")
     
-    def update_user(hint):
-        self.user_hint.config(text=hint)
+    def update_user(self,error):
+        self.user_hint.configure(text=error)
+        self.user_hint.configure(width="70%")
        
 class DraggableWindow():
 
@@ -308,6 +314,7 @@ class DraggableWindow():
         new_x = self.window.winfo_x() + delta_x
         new_y = self.window.winfo_y() + delta_y
         self.window.geometry(f'+{new_x}+{new_y}')
+        
 def main():
     root=ctk.CTk()
     root.overrideredirect(True)

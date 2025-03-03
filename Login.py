@@ -44,7 +44,7 @@ def Register(username, password):
 
 def Login(username, password):
     
-    error=""
+    error="Unknown error"
     user_data = pd.read_csv('user_data.csv')
     
     uname = str(username)
@@ -63,7 +63,10 @@ def Login(username, password):
             return True, user_uuid[0]
         else:
             print("Incorrect password!")
+            error="Incorrect password"
+            return False, error
     else:
+        print("Username not found, you can register?")
         error="Username not found, you can register?"
         return False, error
         
