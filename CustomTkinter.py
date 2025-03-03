@@ -223,16 +223,14 @@ class LoginWindow(ctk.CTkToplevel):
             user_data = pd.read_csv('user_data.csv')
             user_pass = str(password)
     
-            if (not user_pass.isspace() or not len(user_pass) < 8 or not len(user_pass) > 20 or not
-                any(char.isupper() for char in user_pass)):
-                #Edit info prompts
-                pass
+            if user_pass.isspace():
+                self.update_user("Passwords cannot contain spaces")
+            elif len(user_pass) < 8:
+                self.update_user("Password should be 8 chars long")
+            elif len(user_pass) > 20:
+                self.update_user("Passwords should be less than 20 chars ")
             else:
-                print("Invalid Password!!")
-                #Edit info prompts
-                return
-        
-            self.profile_instance.main_instance.send_login_register_commands(username, password, type = "login")
+                self.profile_instance.main_instance.send_login_register_commands(username, password, type = "login")
         
         def register_account():
             username = username_entry.get()
@@ -243,21 +241,25 @@ class LoginWindow(ctk.CTkToplevel):
             user_name = str(username)
             
             if user_name in user_data['Username'].values:
-                print("Username already exists!")
+                self.update_user("Username already exists")
                 #Edit info prompts
                 return
             user_pass = str(password)
             
             
-            if not user_pass or user_pass.isspace() or len(user_pass) < 8 or len(user_pass) > 20 or not any(char.isupper() for char in user_pass):
-                print("Invalid Password!!")
+            if not user_pass:
+                self.update_user("Password cannot be empty")
+            elif user_pass.isspace():
+                self.update_user("Passwords cannot contain spaces")
+            elif len(user_pass) < 8:
+                self.update_user("Password should be 8 chars long")
+            elif len(user_pass) > 20:
+                self.update_user("Passwords should be less than 20 chars ")
+            elif not any(char.isupper() for char in user_pass):
+                self.update_user("Password must contain at least one uppercase letter")
                 #Edit info prompts
-                return
-            else:
-                #Edit info prompts
-                pass
-            
-            self.profile_instance.main_instance.send_login_register_commands(username, password, type = "register")
+                pass            else:
+                self.profile_instance.main_instance.send_login_register_commands(username, password, type = "register")
               
         ##FRAMES
         top_bar = ctk.CTkFrame(self, height=120, bg_color="transparent")#fg_color="transparent"
@@ -296,8 +298,9 @@ class LoginWindow(ctk.CTkToplevel):
         self.user_hint.grid(row=3, column=0, sticky="ew", padx=20)
         register_button.grid(row=5, column=0, sticky="ew")
     
-    def update_user(hint):
-        self.user_hint.config(text=hint)
+    def update_user(self, error):
+        self.user_hint.configure(text=error)
+        self.user_hint.configure(width="70%")
        
 class DraggableWindow():
 
