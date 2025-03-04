@@ -17,10 +17,22 @@ def PokemonSlots():
     for i in range(5):
         pass
         ##Do this later cus idk
-    
+
+
+percentage_result = []
+
+ratio = fuzz.ratio(search, results)
+percentage_result.append(ratio)
+
 
 pokemon_data_global = InitPokemon()
 with open('pokemon_data_globaljson.json', 'w') as f:
     json.dump(pokemon_data_global, f)
 
+
+choice = "bulbasour"
+data = json.load()
+for var in data['']:
+    if var['username'] == choice:
+        print(choice)
 ##PokemonSlots

@@ -258,7 +258,8 @@ class LoginWindow(ctk.CTkToplevel):
             elif not any(char.isupper() for char in user_pass):
                 self.update_user("Password must contain at least one uppercase letter")
                 #Edit info prompts
-                pass            else:
+                pass            
+            else:
                 self.profile_instance.main_instance.send_login_register_commands(username, password, type = "register")
               
         ##FRAMES
