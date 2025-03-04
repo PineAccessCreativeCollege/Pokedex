@@ -3,36 +3,29 @@ from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 import json
 
-url = "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0"
+
+def SearchPokemon(search_term):
+    url = "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0"
 
 
-def InitPokemon():
     response = requests.get(url, timeout=50)
     pokemon_data_global = response.json()
-    print(pokemon_data_global)
-    return pokemon_data_global
-    
-def PokemonSlots():
-    i = 0
-    for i in range(5):
-        pass
-        ##Do this later cus idk
+    #print(pokemon_data_global)
 
+    percentage_result = []
+    for pokemon in pokemon_data_global['results']:
+        ratio = fuzz.ratio(search_term, pokemon['name'])
+        percentage_result.append(ratio)
+        #print(f"{pokemon['name']} - {ratio}%")
 
-percentage_result = []
+    best_matches = []
+    for i in range(10):
+        print(f"Best match: {pokemon_data_global['results'][percentage_result.index(max(percentage_result))]['name']}")
+        best_matches.append(pokemon_data_global['results'][percentage_result.index(max(percentage_result))]['name'])
+        percentage_result.remove(max(percentage_result))
 
-ratio = fuzz.ratio(search, results)
-percentage_result.append(ratio)
+    print(best_matches)
+    return best_matches
 
-
-pokemon_data_global = InitPokemon()
-with open('pokemon_data_globaljson.json', 'w') as f:
-    json.dump(pokemon_data_global, f)
-
-
-choice = "bulbasour"
-data = json.load()
-for var in data['']:
-    if var['username'] == choice:
-        print(choice)
-##PokemonSlots
+if __name__ == "__main__":
+    SearchPokemon()

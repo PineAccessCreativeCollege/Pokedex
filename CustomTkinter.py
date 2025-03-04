@@ -2,6 +2,7 @@ import customtkinter as ctk
 from tkinter import PhotoImage, simpledialog, messagebox
 from PIL import Image, ImageTk
 import Login
+import Search
 import pandas as pd
 
 class Main(ctk.CTkFrame):
@@ -128,6 +129,12 @@ class Main(ctk.CTkFrame):
     def load_user_data(self):
         # Fetch user data and fill boxes
         # Build modularly for universal use. (or not)
+        pass
+
+    def UpdateSearchResults(self, top_results):
+        # Fetch updated search results and fill search results frame
+        # Build modularly for universal use. (or not)
+        print("Updating Search Results")
         pass
         
         
@@ -328,6 +335,11 @@ def main():
         print("Getting pokemon input")
         pokemon = window.get_username()
         print(f"Username: {pokemon}")
+        RunSearchPokemon(pokemon)
+
+    def RunSearchPokemon(input):
+        pokemon_results = Search.SearchPokemon(input)
+        window.UpdateSearchResults(pokemon_results)
     
     window.master.bind('<Return>', get_pokemon_input)
     
