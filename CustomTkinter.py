@@ -83,21 +83,27 @@ class Main(ctk.CTkFrame):
         iterated_column = 0
         
         for i in range(6):
-            i_poke_slot = 'pokemon_slot_' + str(i)
-            i_poke_slot = ctk.CTkButton(current_party, height=140, text=None)
+            self.i_poke_slot = 'pokemon_slot_' + str(i)
+            self.i_poke_slot = ctk.CTkButton(current_party, height=140, text=None)
             if i == 3:
                 iterated_row = 1
                 iterated_column = 0
-            i_poke_slot.grid(row=iterated_row, column=iterated_column, padx=10, pady=10)
+            self.i_poke_slot.grid(row=iterated_row, column=iterated_column, padx=10, pady=10)
             iterated_column+=1
             
-            
+        i=0
         ##An simpler algorithm for filling the search results frame with buttons
-        for i in range(10):
-            i_search_slot = 'search_result_' + str(i)
-            i_search_slot = ctk.CTkButton(search_results_f, text=None)
+        #for i in range(10):
+            #self.i_search_slot = 'search_result_' + str(i)
+            #self.i_search_slot = ctk.CTkButton(search_results_f, text=None)
             
-            i_search_slot.grid(row=i, column=0, padx=10, pady=10)
+            #self.i_search_slot.grid(row=i, column=0, padx=10, pady=10)
+            
+        self.search_result_buttons = []  # Add this line to store the buttons
+        for i in range(10):
+            search_slot = ctk.CTkButton(search_results_f, text=None)
+            search_slot.grid(row=i, column=0, padx=10, pady=10)
+            self.search_result_buttons.append(search_slot)
         
     def on_profile_close(self):
         print("Profile window closed")
@@ -132,11 +138,25 @@ class Main(ctk.CTkFrame):
         pass
 
     def UpdateSearchResults(self, top_results):
-        # Fetch updated search results and fill search results frame
-        # Build modularly for universal use. (or not)
-        print("Updating Search Results")
-        pass
         
+        try: 
+            top_results.isalpha()
+            self.search_result_buttons[0].configure(text = top_results)
+            return
+        except:
+            # If there are no results, clear the search results frame
+            # Fetch updated search results and fill search results frame
+            # Build modularly for universal use. (or not)
+            print("Updating Search Results")
+            for i, result in enumerate(top_results[:10]):  # Limit to 10 results
+                if i < len(self.search_result_buttons):
+                    self.search_result_buttons[i].configure(text=result)
+            
+            # If there are fewer than 10 results, clear the remaining buttons
+            for i in range(len(top_results), 10):
+                if i < len(self.search_result_buttons):
+                    self.search_result_buttons[i].configure(text="")
+            
         
 class ProfileWindow(ctk.CTkToplevel):
     def __init__(self, main_instance, *args, fg_color = None, **kwargs):
