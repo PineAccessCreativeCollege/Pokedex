@@ -60,7 +60,7 @@ class Main(ctk.CTkFrame):
                                     fg_color="grey", hover=None, corner_radius=25, 
                                     border_width=0, command=open_profile_window)
         
-        swap_button = ctk.CTkButton(self, width=400, height=50, bg_color="red", text="Swap Pokemon", border_width=50)
+        swap_button = ctk.CTkButton(self, width=300, height=10, text="Swap Pokemon")
         
         
         top_bar.bind("<ButtonPress-1>", self.draggable.start_drag)  # When mouse button is pressed
@@ -76,7 +76,7 @@ class Main(ctk.CTkFrame):
         self.search_box.grid(row=1, column=0, pady=20)
         pokemon_profile.grid(row=2, column=0, sticky="w", padx=10)
         search_results_f.grid(row=2, column=0, sticky="e", padx=10)
-        current_party.grid(row=4, column=0, sticky="ew", padx=10, pady=20)    
+        current_party.grid(row=4, column=0, sticky="ew", padx=10, pady=5)    
         swap_button.grid(row=3, column=0, pady=20)
         
         ##A simple algorithm for filling the buttons up inside the users party/ should

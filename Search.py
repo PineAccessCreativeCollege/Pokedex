@@ -10,6 +10,7 @@ def SearchPokemon(search_term):
         
         print("is_integer is true")
         is_int = True
+        print(search_term)
         url = "https://pokeapi.co/api/v2/pokemon/" + search_term
         response = requests.get(url, timeout=50)
         pokemon_data_direct = response.json()
@@ -22,6 +23,7 @@ def SearchPokemon(search_term):
     
 
         percentage_result = []
+        search_term = search_term.lower()
         for pokemon in pokemon_data_global['results']:
             ratio = fuzz.ratio(search_term, pokemon['name'])
             percentage_result.append(ratio)
