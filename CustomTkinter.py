@@ -17,6 +17,7 @@ class Main(ctk.CTkFrame):
         #Root Window Settings
         ######
         
+        self.last_click = None
         self.logged_in = False
         self.user_UUID = "None"
         
@@ -60,7 +61,7 @@ class Main(ctk.CTkFrame):
                                     fg_color="grey", hover=None, corner_radius=25, 
                                     border_width=0, command=open_profile_window)
         
-        swap_button = ctk.CTkButton(self, width=300, height=10, text="Swap Pokemon")
+        swap_button = ctk.CTkButton(self, width=300, height=10, text="Swap Pokemon", command=lambda: self.update_poke_slots)
         
         
         top_bar.bind("<ButtonPress-1>", self.draggable.start_drag)  # When mouse button is pressed
@@ -85,13 +86,14 @@ class Main(ctk.CTkFrame):
         iterated_row = 0
         iterated_column = 0
         
+        self.poke_slots = []
         for i in range(6):
-            self.i_poke_slot = 'pokemon_slot_' + str(i)
-            self.i_poke_slot = ctk.CTkButton(current_party, height=140, text=None)
+            poke_slot = ctk.CTkButton(current_party, height=140, text=f"Pokemon {i+1}", command=lambda i=i: self.get_search_click(self.poke_slots[i]))
             if i == 3:
                 iterated_row = 1
                 iterated_column = 0
-            self.i_poke_slot.grid(row=iterated_row, column=iterated_column, padx=10, pady=10)
+            poke_slot.grid(row=iterated_row, column=iterated_column, padx=10, pady=10)
+            self.poke_slots.append(poke_slot)
             iterated_column+=1
             
         i=0
@@ -104,7 +106,7 @@ class Main(ctk.CTkFrame):
             
         self.search_result_buttons = []  # Add this line to store the buttons
         for i in range(10):
-            search_slot = ctk.CTkButton(search_results_f, text=None)
+            search_slot = ctk.CTkButton(search_results_f, text=f"Result {i+1}", command=lambda i=i: self.get_search_click(self.search_result_buttons[i]))
             search_slot.grid(row=i, column=0, padx=10, pady=10)
             self.search_result_buttons.append(search_slot)
         
@@ -116,6 +118,14 @@ class Main(ctk.CTkFrame):
     def get_username(self):
         return self.search_box.get()
     
+    def get_search_click(self, button):
+        self.last_click = button
+
+
+    def update_poke_slots():
+        print()
+        pass
+
     def send_login_register_commands(self, username, password, type):
         print(self.logged_in, self.user_UUID)
         if type == "login":
@@ -159,7 +169,6 @@ class Main(ctk.CTkFrame):
             for i in range(len(top_results), 10):
                 if i < len(self.search_result_buttons):
                     self.search_result_buttons[i].configure(text="")
-            
         
 class ProfileWindow(ctk.CTkToplevel):
     def __init__(self, main_instance, *args, fg_color = None, **kwargs):

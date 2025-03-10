@@ -64,13 +64,10 @@ def Login(username, password):
         else:
             error="Incorrect password"
             print("Incorrect password!")
-            error="Incorrect password"
-            return False, error
             return False, error
     else:
         print("Username not found, you can register?")
         error="Username not found, you can register?"
-        print("Username not found")
         return False, error
         
         
