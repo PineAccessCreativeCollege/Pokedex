@@ -12,14 +12,15 @@ class Main(ctk.CTkFrame):
         
         super().__init__(master, width, height, corner_radius, border_width, bg_color, fg_color,
                          border_color, background_corner_colors, overwrite_preferred_drawing_method, **kwargs)
-        
-        global clicks
-        clicks = 0
+                         
         ######
         #Root Window Settings
         ######
 
-        self.last_click = None
+        self.clicks = 0
+        self.previous_click = None  # To store the first clicked button
+        self.first_click_button = None  # Store the first button clicked
+
         self.logged_in = False
         self.user_UUID = "None"
         
@@ -121,36 +122,38 @@ class Main(ctk.CTkFrame):
         return self.search_box.get()
     
     def get_search_click(self, button):
-        global clicks
-        try:
-            print(firstclickdone)
-            print(clicks)
-            #print(previous_click)
-            clicks += 1
-            print(clicks)
-            if clicks == 2:
-                print("GOOD GOOD GOOD")
-                clicks = 0
-                
-                try:
-                    self.update_poke_slots(button, previous_click)
-                except:
-                    print("FUNC FAILED TO PASS")
-            else:
-                print("BAD BAD BAD")
-        except:
-            firstclickdone = "First click made"
-            #print(firstclickdone)
-            previous_click = button.cget("text")
-            #print(previous_click)
-            print("EXCEPT PASSED NOT GOOD")
-            clicks = 1
-            print(clicks)
+            """
+            Handles the click logic for search results and swapping Pokemon names.
+            Tracks clicks and performs the swap if two different Pokemon slots are clicked.
+            """
+            self.clicks += 1
+            print(f"Click count: {self.clicks}")
+
+            if self.clicks == 1:
+                # First click - store the button clicked and text
+                self.previous_click = button
+                self.first_click_button = button
+                print(f"First click: {self.previous_click.cget('text')}")
+            elif self.clicks == 2:
+                # Second click - check if it's the same button clicked
+                if self.previous_click != button:
+                    # Swap the names
+                    print("Swapping Pokémon names")
+                    first_text = self.previous_click.cget("text")
+                    second_text = button.cget("text")
+                    self.update_poke_slots(self.previous_click, second_text)
+                    self.update_poke_slots(button, first_text)
+                    self.clicks = 0  # Reset the click counter
+                else:
+                    print("You clicked the same slot twice!")
+                    self.clicks = 0  # Reset the counter on same click
 
     def update_poke_slots(self, button, text):
-        print("ples werk")
-        button.configure(text = text)
-        pass
+        """
+        Updates the text of a button in the Pokemon slots.
+        """
+        button.configure(text=text)
+        print(f"Updated {button.cget('text')} to {text}")
 
     def send_login_register_commands(self, username, password, type):
         print(self.logged_in, self.user_UUID)
