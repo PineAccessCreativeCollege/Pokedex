@@ -12,7 +12,7 @@ class Main(ctk.CTkFrame):
         
         super().__init__(master, width, height, corner_radius, border_width, bg_color, fg_color,
                          border_color, background_corner_colors, overwrite_preferred_drawing_method, **kwargs)
-                         
+                    
         ######
         #Root Window Settings
         ######
@@ -64,7 +64,6 @@ class Main(ctk.CTkFrame):
                                     fg_color="grey", hover=None, corner_radius=25, 
                                     border_width=0, command=open_profile_window)
         
-        swap_button = ctk.CTkButton(self, width=300, height=10, text="Swap Pokemon")#, command=lambda: self.update_poke_slots
         
         
         top_bar.bind("<ButtonPress-1>", self.draggable.start_drag)  # When mouse button is pressed
@@ -81,7 +80,6 @@ class Main(ctk.CTkFrame):
         pokemon_profile.grid(row=2, column=0, sticky="w", padx=10)
         search_results_f.grid(row=2, column=0, sticky="e", padx=10)
         current_party.grid(row=4, column=0, sticky="ew", padx=10, pady=5)    
-        swap_button.grid(row=3, column=0, pady=20)
         
         ##A simple algorithm for filling the buttons up inside the users party/ should
         #make it easier to shift to a class based system for the buttons which should
@@ -141,7 +139,7 @@ class Main(ctk.CTkFrame):
                     print("Swapping Pokémon names")
                     first_text = self.previous_click.cget("text")
                     second_text = button.cget("text")
-                    self.update_poke_slots(self.previous_click, second_text)
+                    #self.update_poke_slots(self.previous_click, second_text)
                     self.update_poke_slots(button, first_text)
                     self.clicks = 0  # Reset the click counter
                 else:
@@ -388,8 +386,9 @@ class DraggableWindow():
         
 def main():
     root=ctk.CTk()
-    root.overrideredirect(True)
-    window = Main(root)
+    root.overrideredirect(1)
+    root.wm_attributes("-transparentcolor", "grey")
+    window = Main(root, corner_radius=100)
     window.grid(row=0, column=0)
     
     def get_pokemon_input(event):
