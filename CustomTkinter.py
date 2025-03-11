@@ -13,10 +13,12 @@ class Main(ctk.CTkFrame):
         super().__init__(master, width, height, corner_radius, border_width, bg_color, fg_color,
                          border_color, background_corner_colors, overwrite_preferred_drawing_method, **kwargs)
         
+        global clicks
+        clicks = 0
         ######
         #Root Window Settings
         ######
-        
+
         self.last_click = None
         self.logged_in = False
         self.user_UUID = "None"
@@ -61,7 +63,7 @@ class Main(ctk.CTkFrame):
                                     fg_color="grey", hover=None, corner_radius=25, 
                                     border_width=0, command=open_profile_window)
         
-        swap_button = ctk.CTkButton(self, width=300, height=10, text="Swap Pokemon", command=lambda: self.update_poke_slots)
+        swap_button = ctk.CTkButton(self, width=300, height=10, text="Swap Pokemon")#, command=lambda: self.update_poke_slots
         
         
         top_bar.bind("<ButtonPress-1>", self.draggable.start_drag)  # When mouse button is pressed
@@ -88,12 +90,12 @@ class Main(ctk.CTkFrame):
         
         self.poke_slots = []
         for i in range(6):
-            poke_slot = ctk.CTkButton(current_party, height=140, text=f"Pokemon {i+1}", command=lambda i=i: self.get_search_click(self.poke_slots[i]))
+            self.poke_slot = ctk.CTkButton(current_party, height=140, text=f"Pokemon {i+1}", command=lambda i=i: self.get_search_click(self.poke_slots[i]))
             if i == 3:
                 iterated_row = 1
                 iterated_column = 0
-            poke_slot.grid(row=iterated_row, column=iterated_column, padx=10, pady=10)
-            self.poke_slots.append(poke_slot)
+            self.poke_slot.grid(row=iterated_row, column=iterated_column, padx=10, pady=10)
+            self.poke_slots.append(self.poke_slot)
             iterated_column+=1
             
         i=0
@@ -119,11 +121,35 @@ class Main(ctk.CTkFrame):
         return self.search_box.get()
     
     def get_search_click(self, button):
-        self.last_click = button
+        global clicks
+        try:
+            print(firstclickdone)
+            print(clicks)
+            #print(previous_click)
+            clicks += 1
+            print(clicks)
+            if clicks == 2:
+                print("GOOD GOOD GOOD")
+                clicks = 0
+                
+                try:
+                    self.update_poke_slots(button, previous_click)
+                except:
+                    print("FUNC FAILED TO PASS")
+            else:
+                print("BAD BAD BAD")
+        except:
+            firstclickdone = "First click made"
+            #print(firstclickdone)
+            previous_click = button.cget("text")
+            #print(previous_click)
+            print("EXCEPT PASSED NOT GOOD")
+            clicks = 1
+            print(clicks)
 
-
-    def update_poke_slots():
-        print()
+    def update_poke_slots(self, button, text):
+        print("ples werk")
+        button.configure(text = text)
         pass
 
     def send_login_register_commands(self, username, password, type):
