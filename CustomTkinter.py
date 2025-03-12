@@ -8,7 +8,7 @@ import requests
 
 class Main(ctk.CTkFrame):
     def __init__(self, master, width = 500, height = 800, corner_radius = None, border_width = None,
-                 bg_color = "transparent", fg_color = None, border_color = None,
+                 bg_color = "transparent", fg_color = "transparent", border_color = None,
                  background_corner_colors = None, overwrite_preferred_drawing_method = None, **kwargs):
         
         super().__init__(master, width, height, corner_radius, border_width, bg_color, fg_color,
@@ -64,6 +64,7 @@ class Main(ctk.CTkFrame):
         profile_button = ctk.CTkButton(top_bar, width=50, height=50, text=None, 
                                     fg_color="grey", hover=None, corner_radius=25, 
                                     border_width=0, command=open_profile_window)
+        swap_button = ctk.CTkButton(self, width=300, height=10, text="Save Party", command=lambda: self.save_party())
         
         
         
@@ -80,17 +81,16 @@ class Main(ctk.CTkFrame):
         self.search_box.grid(row=1, column=0, pady=20)
         pokemon_profile.grid(row=2, column=0, sticky="w", padx=10)
         search_results_f.grid(row=2, column=0, sticky="e", padx=10)
-        current_party.grid(row=4, column=0, sticky="ew", padx=10, pady=5)    
+        current_party.grid(row=5, column=0, sticky="ew", padx=10, pady=5)
+        swap_button.grid(row=4, column=0, pady=10)  
         
-        ##A simple algorithm for filling the buttons up inside the users party/ should
-        #make it easier to shift to a class based system for the buttons which should
-        #let them be changed on the fly and after login.
+        ##A simple algorithm for filling the buttons up inside the users party
         iterated_row = 0
         iterated_column = 0
         
         self.poke_slots = []
         for i in range(6):
-            self.poke_slot = ctk.CTkButton(current_party, height=140, text=f"Pokemon {i+1}", command=lambda i=i: self.get_search_click(self.poke_slots[i]))
+            self.poke_slot = ctk.CTkButton(current_party, height=140, text="wooper", command=lambda i=i: self.get_search_click(self.poke_slots[i]))
             if i == 3:
                 iterated_row = 1
                 iterated_column = 0
@@ -108,7 +108,7 @@ class Main(ctk.CTkFrame):
             
         self.search_result_buttons = []  # Add this line to store the buttons
         for i in range(10):
-            search_slot = ctk.CTkButton(search_results_f, text=f"Result {i+1}", command=lambda i=i: self.get_search_click(self.search_result_buttons[i]))
+            search_slot = ctk.CTkButton(search_results_f, text="wooper", command=lambda i=i: self.get_search_click(self.search_result_buttons[i]))
             search_slot.grid(row=i, column=0, padx=10, pady=10)
             self.search_result_buttons.append(search_slot)
         
@@ -135,7 +135,7 @@ class Main(ctk.CTkFrame):
                 print(f"First click: {self.previous_click.cget('text')}")
             elif self.clicks == 2:
                 # Second click - check if it's the same button clicked
-                if self.previous_click != button:
+                if self.previous_click != button and self.first_click_button not in self.poke_slots:
                     # Swap the names
                     print("Swapping Pokémon names")
                     first_text = self.previous_click.cget("text")
@@ -153,10 +153,10 @@ class Main(ctk.CTkFrame):
         """
         
         for i in range(6):
-            print(f"Replacing {self.poke_slots[i]} with {button}")
+            #print(f"Replacing {self.poke_slots[i]} with {button}")
             if self.poke_slots[i] == button:
                 self.poke_slots[i].configure(text=text)
-                print(f"Updated {button.cget('text')} to {text}")
+                #print(f"Updated {button.cget('text')} to {text}")
                 i+=1
             else:
                 pass
@@ -164,6 +164,30 @@ class Main(ctk.CTkFrame):
         #button.configure(text=text)
         #print(f"Updated {button.cget('text')} to {text}")
 
+    def save_party(self):
+        user_data = pd.read_csv('user_data.csv')
+        if self.logged_in:
+            
+            poke_names = []
+            poke_ids = []
+            for i in range(6):
+                poke_names.append(self.poke_slots[i].cget("text"))
+                #print(self.poke_slots[i].cget("text"))
+                url = "https://pokeapi.co/api/v2/pokemon/" + self.poke_slots[i].cget('text')
+                response = requests.get(url, timeout=50)
+                pokemon_data_direct = response.json()
+                poke_ids.append(pokemon_data_direct['id'])
+                
+            user_row = user_data.loc[user_data['UUID'] == self.user_UUID]
+            print(user_row)
+            
+            user_data.loc[user_data['UUID'] == self.user_UUID, ['Poke1', 'Poke2', 'Poke3', 'Poke4', 'Poke5', 'Poke6']] = poke_ids
+            
+            user_data.to_csv('user_data.csv', index=False)
+        else:
+            print("You need to be logged in to save your party!")
+        pass
+    
     def send_login_register_commands(self, username, password, type):
         print(self.logged_in, self.user_UUID)
         if type == "login":
@@ -205,8 +229,8 @@ class Main(ctk.CTkFrame):
             print(poke_id)
             poke_name = get_poke_name(poke_id)
             poke_names.append(poke_name)
+        print(poke_names)
         for i in range(6):
-            print(self.poke_slots)
             self.update_poke_slots(self.poke_slots[i],poke_names[i])
 
     def UpdateSearchResults(self, top_results):
@@ -420,7 +444,7 @@ def main():
     root=ctk.CTk()
     root.overrideredirect(1)
     #root.wm_attributes("-transparentcolor", "grey")
-    window = Main(root)
+    window = Main(root, corner_radius=100)
     window.grid(row=0, column=0)
     
     def get_pokemon_input(event):
