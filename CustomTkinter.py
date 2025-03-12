@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 import Login
 import Search
 import pandas as pd
+import requests
 
 class Main(ctk.CTkFrame):
     def __init__(self, master, width = 500, height = 800, corner_radius = None, border_width = None,
@@ -150,8 +151,18 @@ class Main(ctk.CTkFrame):
         """
         Updates the text of a button in the Pokemon slots.
         """
-        button.configure(text=text)
-        print(f"Updated {button.cget('text')} to {text}")
+        
+        for i in range(6):
+            print(f"Replacing {self.poke_slots[i]} with {button}")
+            if self.poke_slots[i] == button:
+                self.poke_slots[i].configure(text=text)
+                print(f"Updated {button.cget('text')} to {text}")
+                i+=1
+            else:
+                pass
+        
+        #button.configure(text=text)
+        #print(f"Updated {button.cget('text')} to {text}")
 
     def send_login_register_commands(self, username, password, type):
         print(self.logged_in, self.user_UUID)
@@ -167,15 +178,36 @@ class Main(ctk.CTkFrame):
             self.profile_window.login_window.destroy()
             #Output message box for successful login
             #Run function for fetching user data and filling boxes
+            self.load_user_data(self.user_UUID)
             pass
         else:
             self.profile_window.login_window.update_user(self.user_UUID)
             pass
     
-    def load_user_data(self):
-        # Fetch user data and fill boxes
-        # Build modularly for universal use. (or not)
-        pass
+    def load_user_data(self, userUUID):
+        
+        def get_poke_name(id):
+            id = int(id)
+            id = str(id)
+            url = "https://pokeapi.co/api/v2/pokemon/" + id
+            response = requests.get(url, timeout=50)
+            pokemon_data_direct = response.json()
+            print(pokemon_data_direct['name'])
+            return pokemon_data_direct['name']
+        
+        
+        user_data = pd.read_csv("user_data.csv")
+        
+        poke_names = []
+        for i in range(1,7):
+            current_poke = f"Poke{i}"
+            poke_id = user_data.loc[user_data['UUID'] == userUUID, current_poke].iloc[0]
+            print(poke_id)
+            poke_name = get_poke_name(poke_id)
+            poke_names.append(poke_name)
+        for i in range(6):
+            print(self.poke_slots)
+            self.update_poke_slots(self.poke_slots[i],poke_names[i])
 
     def UpdateSearchResults(self, top_results):
         
@@ -387,8 +419,8 @@ class DraggableWindow():
 def main():
     root=ctk.CTk()
     root.overrideredirect(1)
-    root.wm_attributes("-transparentcolor", "grey")
-    window = Main(root, corner_radius=100)
+    #root.wm_attributes("-transparentcolor", "grey")
+    window = Main(root)
     window.grid(row=0, column=0)
     
     def get_pokemon_input(event):
