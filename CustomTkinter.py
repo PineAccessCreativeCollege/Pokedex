@@ -55,6 +55,9 @@ class Main(ctk.CTkFrame):
         search_results_f = ctk.CTkScrollableFrame(self, height=250, width=150, bg_color="transparent")
         current_party = ctk.CTkFrame(self, height=250, bg_color="transparent")
         
+        ##Labels
+        pokemon_label = ctk.CTkFont(
+        
         ##IMAGES
         x_imagemage_path = "Red_X.png"
         pill_image = Image.open(x_imagemage_path).resize((25,25))
@@ -165,7 +168,7 @@ class Main(ctk.CTkFrame):
                 #raw_data = u.read()
             img_response = requests.get(image_url)
             image_data = Image.open(io.BytesIO(img_response.content))
-            poke_img = ctk.CTkImage(light_image=image_data,
+            poke_img = ctk.CTkImage(light_image=image_data, dark_image=image_data,
                                     size=(100, 100))
             
             print(self.poke_slots)
@@ -178,17 +181,18 @@ class Main(ctk.CTkFrame):
         for i in range(6):
             #print(f"Replacing {self.poke_slots[i]} with {button}")
             if self.poke_slots[i] == button:
-                self.poke_slots[i].configure(text=text)
                 
                 img = get_image_url(text)
-                self.poke_slots[i].configure(image=img)
-                self.poke_slots[i].update()
+                self.poke_slots[i].configure(text=text, image=img)
+                self.poke_slots[i].image = img
                 i+=1
             else:
                 pass
         
         #button.configure(text=text)
         #print(f"Updated {button.cget('text')} to {text}")
+        
+        
 
     def save_party(self):
         user_data = pd.read_csv('user_data.csv')
