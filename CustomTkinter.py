@@ -5,6 +5,9 @@ import Login
 import Search
 import pandas as pd
 import requests
+import io
+import urllib
+import json
 
 class Main(ctk.CTkFrame):
     def __init__(self, master, width = 500, height = 800, corner_radius = None, border_width = None,
@@ -90,7 +93,7 @@ class Main(ctk.CTkFrame):
         
         self.poke_slots = []
         for i in range(6):
-            self.poke_slot = ctk.CTkButton(current_party, height=140, text="wooper", command=lambda i=i: self.get_search_click(self.poke_slots[i]))
+            self.poke_slot = ctk.CTkButton(current_party, image=None, height=140, text="", command=lambda i=i: self.get_search_click(self.poke_slots[i]))
             if i == 3:
                 iterated_row = 1
                 iterated_column = 0
@@ -151,12 +154,35 @@ class Main(ctk.CTkFrame):
         """
         Updates the text of a button in the Pokemon slots.
         """
-        
+        def get_image_url(text):
+            
+            url = "https://pokeapi.co/api/v2/pokemon/" + text
+            response = requests.get(url, timeout=50)
+            pokemon_data_direct = response.json()
+            
+            image_url = pokemon_data_direct['sprites']['front_default']
+            #with urllib.request.urlopen(image_url) as u:
+                #raw_data = u.read()
+            img_response = requests.get(image_url)
+            image_data = Image.open(io.BytesIO(img_response.content))
+            poke_img = ctk.CTkImage(light_image=image_data,
+                                    size=(100, 100))
+            
+            print(self.poke_slots)
+            print(poke_img)
+            
+            #img = ImageTk.PhotoImage(Image.open(io.BytesIO(raw_data)).resize((100,100)))
+            return poke_img
+                                    
+            
         for i in range(6):
             #print(f"Replacing {self.poke_slots[i]} with {button}")
             if self.poke_slots[i] == button:
                 self.poke_slots[i].configure(text=text)
-                #print(f"Updated {button.cget('text')} to {text}")
+                
+                img = get_image_url(text)
+                self.poke_slots[i].configure(image=img)
+                self.poke_slots[i].update()
                 i+=1
             else:
                 pass
