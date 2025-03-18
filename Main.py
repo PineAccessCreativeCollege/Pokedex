@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from tkinter import PhotoImage, simpledialog, messagebox
 from PIL import Image, ImageTk
-import Login
+import LoginRegister
 import Search
 import pandas as pd
 import requests
@@ -9,14 +9,25 @@ import io
 import urllib
 import json
 
+RED = "#dc0a2d"   
+BLACK = "#242424"  
+GRAY = "#dedede"
+BLUE = "#29aafd"
+DARKRED = "#c90e30"
+MAROON = "#88051c"
+DARKBLUE = "#102e53"
+GREEN = "#51ad60"
+
 class Main(ctk.CTkFrame):
     def __init__(self, master, width = 500, height = 800, corner_radius = None, border_width = None,
-                 bg_color = "transparent", fg_color = "transparent", border_color = None,
+                 bg_color = "transparent", fg_color = "#dc0a2d", border_color = None,
                  background_corner_colors = None, overwrite_preferred_drawing_method = None, **kwargs):
         
         super().__init__(master, width, height, corner_radius, border_width, bg_color, fg_color,
                          border_color, background_corner_colors, overwrite_preferred_drawing_method, **kwargs)
-                    
+        
+        
+        
         ######
         #Root Window Settings
         ######
@@ -50,10 +61,11 @@ class Main(ctk.CTkFrame):
         
         ##FRAMES
 
-        top_bar = ctk.CTkFrame(self, height=90, bg_color="transparent")#fg_color="transparent"
-        pokemon_profile = ctk.CTkFrame(self, height=250, width=300, bg_color="transparent")
-        search_results_f = ctk.CTkScrollableFrame(self, height=250, width=150, bg_color="transparent")
-        current_party = ctk.CTkFrame(self, height=250, bg_color="transparent")
+        top_bar = ctk.CTkFrame(self, height=90, bg_color="transparent", fg_color=DARKRED)#fg_color="transparent"
+        pokemon_profile = ctk.CTkFrame(self, height=250, width=300, corner_radius=30, bg_color=RED, fg_color=BLACK,
+                                       border_color=GRAY, border_width=10)
+        search_results_f = ctk.CTkScrollableFrame(self, height=250, width=150, bg_color="transparent", fg_color=DARKRED)
+        current_party = ctk.CTkFrame(self, height=250, bg_color="transparent", fg_color=DARKRED, border_color=MAROON, border_width=5)
         
         ##Labels
         
@@ -67,7 +79,7 @@ class Main(ctk.CTkFrame):
                                     fg_color="transparent", text_color="red", hover=None, command=on_close)
         
         profile_button = ctk.CTkButton(top_bar, width=50, height=50, text=None, 
-                                    fg_color="grey", hover=None, corner_radius=25, 
+                                    fg_color=BLACK, hover=None, corner_radius=25, 
                                     border_width=0, command=open_profile_window)
         swap_button = ctk.CTkButton(self, width=300, height=10, text="Save Party", command=lambda: self.save_party())
         
@@ -77,7 +89,7 @@ class Main(ctk.CTkFrame):
         top_bar.bind("<B1-Motion>", self.draggable.do_drag)  # When mouse is moved with button pressed
         
         ##ENTRYS
-        self.search_box = ctk.CTkEntry(self, width=400, height=50, placeholder_text="Enter a Pokemon name or ID")
+        self.search_box = ctk.CTkEntry(self, width=400, height=50, fg_color=BLACK, placeholder_text="Enter a Pokemon name or ID")
         
         ##LAYOUT
         top_bar.grid(row=0, column=0, sticky="ew")
@@ -95,7 +107,7 @@ class Main(ctk.CTkFrame):
         
         self.poke_slots = []
         for i in range(6):
-            self.poke_slot = ctk.CTkButton(current_party, image=None, height=140, text="", command=lambda i=i: self.get_search_click(self.poke_slots[i]))
+            self.poke_slot = ctk.CTkButton(current_party, fg_color=BLUE, image=None, height=140, text="", command=lambda i=i: self.get_search_click(self.poke_slots[i]))
             if i == 3:
                 iterated_row = 1
                 iterated_column = 0
@@ -113,7 +125,7 @@ class Main(ctk.CTkFrame):
             
         self.search_result_buttons = []  # Add this line to store the buttons
         for i in range(10):
-            search_slot = ctk.CTkButton(search_results_f, text="wooper", command=lambda i=i: self.get_search_click(self.search_result_buttons[i]))
+            search_slot = ctk.CTkButton(search_results_f, fg_color=BLUE, height=140, text="wooper", command=lambda i=i: self.get_search_click(self.search_result_buttons[i]))
             search_slot.grid(row=i, column=0, padx=10, pady=10)
             self.search_result_buttons.append(search_slot)
         
@@ -220,9 +232,9 @@ class Main(ctk.CTkFrame):
     def send_login_register_commands(self, username, password, type):
         print(self.logged_in, self.user_UUID)
         if type == "login":
-            self.logged_in, self.user_UUID = Login.Login(username, password)
+            self.logged_in, self.user_UUID = LoginRegister.Login(username, password)
         elif type == "register":
-            self.logged_in, self.user_UUID = Login.Register(username, password)
+            self.logged_in, self.user_UUID = LoginRegister.Register(username, password)
         else:
             print("Invalid login/register type")
         print(self.logged_in, self.user_UUID)
@@ -470,10 +482,10 @@ class DraggableWindow():
         self.window.geometry(f'+{new_x}+{new_y}')
         
 def main():
-    root=ctk.CTk()
+    root=ctk.CTk(fg_color="#dc0a2d")
     root.overrideredirect(1)
     #root.wm_attributes("-transparentcolor", "grey")
-    window = Main(root, corner_radius=100)
+    window = Main(root, corner_radius=100, fg_color="#dc0a2d")
     window.grid(row=0, column=0)
     
     def get_pokemon_input(event):
