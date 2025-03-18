@@ -56,7 +56,6 @@ class Main(ctk.CTkFrame):
         current_party = ctk.CTkFrame(self, height=250, bg_color="transparent")
         
         ##Labels
-        pokemon_label = ctk.CTkFont(
         
         ##IMAGES
         x_imagemage_path = "Red_X.png"
