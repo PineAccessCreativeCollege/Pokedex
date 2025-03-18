@@ -17,6 +17,7 @@ DARKRED = "#c90e30"
 MAROON = "#88051c"
 DARKBLUE = "#102e53"
 GREEN = "#51ad60"
+YELLOW = "#fae246"
 
 class Main(ctk.CTkFrame):
     def __init__(self, master, width = 500, height = 800, corner_radius = None, border_width = None,
@@ -79,7 +80,7 @@ class Main(ctk.CTkFrame):
                                     fg_color="transparent", text_color="red", hover=None, command=on_close)
         
         profile_button = ctk.CTkButton(top_bar, width=50, height=50, text=None, 
-                                    fg_color=BLACK, hover=None, corner_radius=25, 
+                                    fg_color=YELLOW, hover=None, corner_radius=25, 
                                     border_width=0, command=open_profile_window)
         swap_button = ctk.CTkButton(self, width=300, height=10, text="Save Party", command=lambda: self.save_party())
         
