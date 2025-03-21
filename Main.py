@@ -90,7 +90,7 @@ class Main(ctk.CTkFrame):
         top_bar.bind("<B1-Motion>", self.draggable.do_drag)  # When mouse is moved with button pressed
         
         ##ENTRYS
-        self.search_box = ctk.CTkEntry(self, width=400, height=50, fg_color=BLACK, placeholder_text="Enter a Pokemon name or ID")
+        self.search_box = ctk.CTkEntry(self, width=400, height=50, fg_color=BLACK, placeholder_text="Enter a Pokemon name or ID", text_color="white")
         
         ##LAYOUT
         top_bar.grid(row=0, column=0, sticky="ew")
