@@ -108,7 +108,7 @@ class Main(ctk.CTkFrame):
         
         self.poke_slots = []
         for i in range(6):
-            self.poke_slot = ctk.CTkButton(current_party, fg_color=BLUE, image=None, height=140, text="", command=lambda i=i: self.get_search_click(self.poke_slots[i]))
+            self.poke_slot = ctk.CTkButton(current_party, compound="top", fg_color=BLUE, image=None, height=140, text="", command=lambda i=i: self.get_search_click(self.poke_slots[i]))
             if i == 3:
                 iterated_row = 1
                 iterated_column = 0
@@ -126,7 +126,7 @@ class Main(ctk.CTkFrame):
             
         self.search_result_buttons = []  # Add this line to store the buttons
         for i in range(10):
-            search_slot = ctk.CTkButton(search_results_f, fg_color=BLUE, height=140, text="wooper", command=lambda i=i: self.get_search_click(self.search_result_buttons[i]))
+            search_slot = ctk.CTkButton(search_results_f, fg_color=BLUE, height=140, text="wooper", compound="top", command=lambda i=i: self.get_search_click(self.search_result_buttons[i]))
             search_slot.grid(row=i, column=0, padx=10, pady=10)
             self.search_result_buttons.append(search_slot)
         
@@ -165,36 +165,37 @@ class Main(ctk.CTkFrame):
                     print("You clicked the same slot twice!")
                     self.clicks = 0  # Reset the counter on same click
 
+
+    def get_image_url(self, text):
+        
+        url = "https://pokeapi.co/api/v2/pokemon/" + text
+        response = requests.get(url, timeout=50)
+        pokemon_data_direct = response.json()
+        
+        image_url = pokemon_data_direct['sprites']['front_default']
+        #with urllib.request.urlopen(image_url) as u:
+            #raw_data = u.read()
+        img_response = requests.get(image_url)
+        image_data = Image.open(io.BytesIO(img_response.content))
+        poke_img = ctk.CTkImage(light_image=image_data, dark_image=image_data,
+                                size=(100, 100))
+        
+        #print(self.poke_slots)
+        #print(poke_img)
+        
+        #img = ImageTk.PhotoImage(Image.open(io.BytesIO(raw_data)).resize((100,100)))
+        return poke_img
+    
     def update_poke_slots(self, button, text):
         """
         Updates the text of a button in the Pokemon slots.
         """
-        def get_image_url(text):
-            
-            url = "https://pokeapi.co/api/v2/pokemon/" + text
-            response = requests.get(url, timeout=50)
-            pokemon_data_direct = response.json()
-            
-            image_url = pokemon_data_direct['sprites']['front_default']
-            #with urllib.request.urlopen(image_url) as u:
-                #raw_data = u.read()
-            img_response = requests.get(image_url)
-            image_data = Image.open(io.BytesIO(img_response.content))
-            poke_img = ctk.CTkImage(light_image=image_data, dark_image=image_data,
-                                    size=(100, 100))
-            
-            print(self.poke_slots)
-            print(poke_img)
-            
-            #img = ImageTk.PhotoImage(Image.open(io.BytesIO(raw_data)).resize((100,100)))
-            return poke_img
-                                    
-            
+         
         for i in range(6):
             #print(f"Replacing {self.poke_slots[i]} with {button}")
             if self.poke_slots[i] == button:
                 
-                img = get_image_url(text)
+                img = self.get_image_url(text)
                 self.poke_slots[i].configure(text=text, image=img)
                 self.poke_slots[i].image = img
                 i+=1
@@ -279,7 +280,8 @@ class Main(ctk.CTkFrame):
         
         try: 
             top_results.isalpha()
-            self.search_result_buttons[0].configure(text = top_results)
+            img = self.get_image_url(top_results)
+            self.search_result_buttons[0].configure(text = top_results, image=img)
             return
         except:
             # If there are no results, clear the search results frame
@@ -288,7 +290,10 @@ class Main(ctk.CTkFrame):
             print("Updating Search Results")
             for i, result in enumerate(top_results[:10]):  # Limit to 10 results
                 if i < len(self.search_result_buttons):
-                    self.search_result_buttons[i].configure(text=result)
+                    img = self.get_image_url(result)
+                    self.search_result_buttons[i].configure(text=result, image=img)
+                    self.search_result_buttons[i].image = img
+                    
             
             # If there are fewer than 10 results, clear the remaining buttons
             for i in range(len(top_results), 10):
